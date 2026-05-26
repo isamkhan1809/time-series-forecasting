@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Energy Consumption Forecaster</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --border:    #30363d;
+      --text:      #c9d1d9;
+      --muted:     #8b949e;
+      --accent:    #79c0ff;
+      --hist:      #58a6ff;
+      --forecast:  #f0883e;
+      --ci:        rgba(240, 136, 62, 0.18);
+      --green:     #3fb950;
+      --red:       #f85149;
+      --radius:    12px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── Layout ──────────────────────────────────────────────────── */
+    .page { max-width: 1200px; margin: 0 auto; padding: 24px 20px 48px; }
+
+    /* ── Header ──────────────────────────────────────────────────── */
+    .header { text-align: center; margin-bottom: 32px; }
+    .header h1 {
+      font-size: clamp(22px, 4vw, 34px);
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--forecast));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    .header p { color: var(--muted); margin-top: 6px; font-size: 13px; letter-spacing: 0.5px; }
+
+    /* ── Controls ────────────────────────────────────────────────── */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+    .control-group { display: flex; flex-direction: column; gap: 6px; }
+    .control-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+    .pill-group { display: flex; gap: 6px; }
+    .pill {
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .pill:hover { border-color: var(--accent); color: var(--accent); }
+    .pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0d1117;
+      font-weight: 600;
+    }
+    .pill.active-forecast {
+      background: var(--forecast);
+      border-color: var(--forecast);
+      color: #0d1117;
+      font-weight: 600;
+    }
+    .run-btn {
+      margin-left: auto;
+      padding: 10px 28px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), #388bfd);
+      color: #0d1117;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .run-btn:hover { opacity: 0.9; }
+    .run-btn:active { transform: scale(0.97); }
+    .run-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── Chart card ──────────────────────────────────────────────── */
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .chart-card canvas { max-height: 400px; }
+
+    /* Loading overlay */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      background: rgba(13,17,23,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+    .overlay.show { opacity: 1; pointer-events: auto; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Metric cards ─────────────────────────────────────────────── */
+    .cards-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+    }
+    .card-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
+    .card-sub { font-size: 11px; color: var(--muted); }
+    .card.green .card-value  { color: var(--green); }
+    .card.orange .card-value { color: var(--forecast); }
+    .card.purple .card-value { color: #d2a8ff; }
+
+    /* ── Section heading ─────────────────────────────────────────── */
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+
+    /* ── Legend strip ────────────────────────────────────────────── */
+    .legend {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+    .legend-dot { width: 12px; height: 3px; border-radius: 2px; }
+    .legend-dot.hist     { background: var(--hist); }
+    .legend-dot.forecast { background: var(--forecast); border-top: 2px dashed var(--forecast); height: 0; width: 16px; }
+    .legend-dot.ci       { background: var(--ci); border: 1px solid var(--forecast); height: 8px; width: 12px; border-radius: 2px; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <h1>Energy Consumption Forecaster</h1>
+    <p>ARIMA &amp; Exponential Smoothing &nbsp;|&nbsp; Synthetic Daily kWh Data</p>
+  </header>
+
+  <!-- Controls -->
+  <div class="controls">
+    <div class="control-group">
+      <span class="control-label">Model</span>
+      <div class="pill-group" id="modelGroup">
+        <button class="pill active" data-value="arima">ARIMA</button>
+        <button class="pill" data-value="ets">ETS</button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <span class="control-label">Horizon</span>
+      <div class="pill-group" id="horizonGroup">
+        <button class="pill active-forecast" data-value="30">30 Days</button>
+        <button class="pill" data-value="60">60 Days</button>
+        <button class="pill" data-value="90">90 Days</button>
+      </div>
+    </div>
+
+    <button class="run-btn" id="runBtn">Run Forecast</button>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-card">
+    <div class="overlay" id="overlay"><div class="spinner"></div></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot hist"></div> Historical (last 90 days)</div>
+      <div class="legend-item"><div class="legend-dot forecast"></div> Forecast</div>
+      <div class="legend-item"><div class="legend-dot ci"></div> Confidence Interval</div>
+    </div>
+    <canvas id="mainChart"></canvas>
+  </div>
+
+  <!-- Forecast metrics -->
+  <p class="section-title">Forecast Metrics</p>
+  <div class="cards-row">
+    <div class="card">
+      <span class="card-label">RMSE</span>
+      <span class="card-value" id="metricRmse">—</span>
+      <span class="card-sub">Root Mean Squared Error</span>
+    </div>
+    <div class="card green">
+      <span class="card-label">MAE</span>
+      <span class="card-value" id="metricMae">—</span>
+      <span class="card-sub">Mean Absolute Error</span>
+    </div>
+    <div class="card orange">
+      <span class="card-label">Model</span>
+      <span class="card-value" id="metricModel" style="font-size:16px">—</span>
+      <span class="card-sub">Selected algorithm</span>
+    </div>
+    <div class="card purple">
+      <span class="card-label">Horizon</span>
+      <span class="card-value" id="metricHorizon">—</span>
+      <span class="card-sub">Days ahead</span>
+    </div>
+  </div>
+
+  <!-- Summary stats -->
+  <p class="section-title">Dataset Summary</p>
+  <div class="cards-row">
+    <div class="card">
+      <span class="card-label">Avg Consumption</span>
+      <span class="card-value" id="statAvg">—</span>
+      <span class="card-sub">kWh per day</span>
+    </div>
+    <div class="card orange">
+      <span class="card-label">Peak Day</span>
+      <span class="card-value" id="statPeak" style="font-size:15px">—</span>
+      <span class="card-sub">Highest recorded</span>
+    </div>
+    <div class="card green">
+      <span class="card-label">Min Day</span>
+      <span class="card-value" id="statMin" style="font-size:15px">—</span>
+      <span class="card-sub">Lowest recorded</span>
+    </div>
+    <div class="card purple">
+      <span class="card-label">Trend</span>
+      <span class="card-value" id="statTrend" style="font-size:16px">—</span>
+      <span class="card-sub">Overall direction</span>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:5000' : '';
+/* ── State ───────────────────────────────────────────────────────────── */
+let selectedModel   = 'arima';
+let selectedHorizon = 30;
+let chart           = null;
+
+/* ── Pill selection ──────────────────────────────────────────────────── */
+function bindPills(groupId, activeClass, onChange) {
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('.pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      group.querySelectorAll('.pill').forEach(b => b.classList.remove(activeClass));
+      btn.classList.add(activeClass);
+      onChange(btn.dataset.value);
+    });
+  });
+}
+
+bindPills('modelGroup',   'active',          v => { selectedModel   = v; });
+bindPills('horizonGroup', 'active-forecast', v => { selectedHorizon = parseInt(v); });
+
+/* ── Chart.js setup ──────────────────────────────────────────────────── */
+function createChart(historical, forecastPts, splitDate) {
+  const ctx = document.getElementById('mainChart').getContext('2d');
+
+  const histLabels = historical.map(d => d.date);
+  const histValues = historical.map(d => d.value);
+
+  const fcLabels  = forecastPts.map(d => d.date);
+  const fcValues  = forecastPts.map(d => d.value);
+  const fcLower   = forecastPts.map(d => d.lower);
+  const fcUpper   = forecastPts.map(d => d.upper);
+
+  const allLabels = [...histLabels, ...fcLabels];
+
+  // Pad historical & forecast arrays with nulls so they share the same x-axis
+  const histPadded = [...histValues, ...Array(fcLabels.length).fill(null)];
+  const fcPadded   = [...Array(histLabels.length).fill(null), ...fcValues];
+  const upperPad   = [...Array(histLabels.length).fill(null), ...fcUpper];
+  const lowerPad   = [...Array(histLabels.length).fill(null), ...fcLower];
+
+  const splitIdx = histLabels.length - 1;
+
+  const data = {
+    labels: allLabels,
+    datasets: [
+      {
+        label: 'Historical',
+        data: histPadded,
+        borderColor: '#58a6ff',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.3,
+        order: 2,
+      },
+      {
+        label: 'Forecast',
+        data: fcPadded,
+        borderColor: '#f0883e',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        tension: 0.3,
+        order: 2,
+      },
+      {
+        label: 'CI Upper',
+        data: upperPad,
+        borderColor: 'transparent',
+        backgroundColor: 'transparent',
+        pointRadius: 0,
+        fill: '+1',
+        order: 3,
+      },
+      {
+        label: 'CI Lower',
+        data: lowerPad,
+        borderColor: 'transparent',
+        backgroundColor: 'rgba(240, 136, 62, 0.15)',
+        pointRadius: 0,
+        fill: false,
+        order: 3,
+      },
+    ],
+  };
+
+  const annotationLine = {
+    type: 'line',
+    xMin: splitIdx,
+    xMax: splitIdx,
+    borderColor: 'rgba(201,209,217,0.3)',
+    borderWidth: 1.5,
+    borderDash: [5, 5],
+    label: {
+      display: true,
+      content: 'Forecast start',
+      position: 'end',
+      color: 'rgba(201,209,217,0.5)',
+      font: { size: 10 },
+      yAdjust: -10,
+    },
+  };
+
+  const config = {
+    type: 'line',
+    data,
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        annotation: { annotations: { splitLine: annotationLine } },
+        tooltip: {
+          backgroundColor: '#161b22',
+          borderColor: '#30363d',
+          borderWidth: 1,
+          titleColor: '#c9d1d9',
+          bodyColor: '#8b949e',
+          padding: 10,
+          callbacks: {
+            title: items => items[0].label,
+            label: item => {
+              if (item.dataset.label === 'CI Upper' || item.dataset.label === 'CI Lower') return null;
+              const v = item.raw;
+              if (v === null) return null;
+              return ` ${item.dataset.label}: ${v.toFixed(1)} kWh`;
+            },
+            filter: item => item.raw !== null,
+          },
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: '#8b949e',
+            maxTicksLimit: 12,
+            maxRotation: 0,
+          },
+          grid: { color: '#21262d' },
+        },
+        y: {
+          ticks: { color: '#8b949e' },
+          grid: { color: '#21262d' },
+          title: {
+            display: true,
+            text: 'Consumption (kWh)',
+            color: '#8b949e',
+            font: { size: 11 },
+          },
+        },
+      },
+    },
+  };
+
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, config);
+}
+
+/* ── Update metric cards ─────────────────────────────────────────────── */
+function updateMetrics(metrics, horizon) {
+  document.getElementById('metricRmse').textContent   = metrics.rmse;
+  document.getElementById('metricMae').textContent    = metrics.mae;
+  document.getElementById('metricModel').textContent  = metrics.model_name;
+  document.getElementById('metricHorizon').textContent = horizon + ' days';
+}
+
+/* ── Fetch forecast ──────────────────────────────────────────────────── */
+async function runForecast() {
+  const btn     = document.getElementById('runBtn');
+  const overlay = document.getElementById('overlay');
+
+  btn.disabled = true;
+  overlay.classList.add('show');
+
+  try {
+    const res = await fetch(API_BASE + '/api/forecast', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: selectedModel, horizon: selectedHorizon }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+
+    createChart(data.historical, data.forecast, null);
+    updateMetrics(data.metrics, selectedHorizon);
+  } catch (err) {
+    console.error('Forecast error:', err);
+    alert('Error fetching forecast. Check the console for details.');
+  } finally {
+    btn.disabled = false;
+    overlay.classList.remove('show');
+  }
+}
+
+document.getElementById('runBtn').addEventListener('click', runForecast);
+
+/* ── Fetch summary ───────────────────────────────────────────────────── */
+async function loadSummary() {
+  try {
+    const res  = await fetch(API_BASE + '/api/summary');
+    const data = await res.json();
+    document.getElementById('statAvg').textContent   = data.avg_consumption + ' kWh';
+    document.getElementById('statPeak').textContent  = data.peak_day;
+    document.getElementById('statMin').textContent   = data.min_day;
+    document.getElementById('statTrend').textContent = data.trend_direction;
+  } catch (err) {
+    console.error('Summary error:', err);
+  }
+}
+
+/* ── Boot ────────────────────────────────────────────────────────────── */
+(async () => {
+  await loadSummary();
+  await runForecast();  // Load default view on page open
+})();
+</script>
+</body>
+</html>
