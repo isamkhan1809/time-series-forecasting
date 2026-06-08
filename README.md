@@ -18,7 +18,7 @@
 
 <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=9B59B6&center=true&vCenter=true&width=700&lines=ARIMA.+Prophet.+LSTM.+Three+Models.+One+Future.+%F0%9F%94%AE;60-Day+Energy+Consumption+Forecast;Classical+Stats+vs+Deep+Learning+%E2%80%94+Head+to+Head;3+Years+of+Data+%7C+Full+Evaluation+Pipeline" alt="Typing SVG" />
 
-<img src="https://media.giphy.com/media/du3J3cXyzhj75IOgvA/giphy.gif" width="360" />
+<img src="https://media.giphy.com/media/SBrQ5B0qNBDjNz8QoC/giphy.gif" width="360" />
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://tensorflow.org)
