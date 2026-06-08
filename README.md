@@ -144,7 +144,8 @@ time-series-forecasting/
 
 <br/>
 
-Built by [Isam Khan](https://github.com/isamkhan1809) &nbsp;|&nbsp;
+Interested in forecasting, time series modelling, or energy analytics?<br/>
+Let's connect — built by <a href="https://github.com/isamkhan1809">Isam Khan</a> &nbsp;|&nbsp;
 <a href="https://linkedin.com/in/isam-khan-3a1260292"><img src="https://img.shields.io/badge/-LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white&labelColor=000000"/></a>
 <a href="https://isamkhan.com"><img src="https://img.shields.io/badge/-isamkhan.com-00D9FF?style=flat-square&logo=googlechrome&logoColor=white&labelColor=000000"/></a>
 
