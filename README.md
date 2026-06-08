@@ -1,150 +1,180 @@
-# Time Series Forecasting: Energy Consumption Prediction
+<div align="center">
 
-A complete data science project demonstrating how to forecast future energy consumption using three complementary approaches: classical statistical modeling (ARIMA), modern decomposition-based forecasting (Prophet), and deep learning (LSTM). The project walks through the full pipeline from raw data generation and exploratory analysis through model training, evaluation, and comparison.
+```
+████████╗██╗███╗   ███╗███████╗    ███████╗███████╗██████╗ ██╗███████╗███████╗
+╚══██╔══╝██║████╗ ████║██╔════╝    ██╔════╝██╔════╝██╔══██╗██║██╔════╝██╔════╝
+   ██║   ██║██╔████╔██║█████╗      ███████╗█████╗  ██████╔╝██║█████╗  ███████╗
+   ██║   ██║██║╚██╔╝██║██╔══╝      ╚════██║██╔══╝  ██╔══██╗██║██╔══╝  ╚════██║
+   ██║   ██║██║ ╚═╝ ██║███████╗    ███████║███████╗██║  ██║██║███████╗███████║
+   ╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝    ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝
+
+    ███████╗ ██████╗ ██████╗ ███████╗ ██████╗ █████╗ ███████╗████████╗██╗███╗   ██╗ ██████╗
+    ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔════╝╚══██╔══╝██║████╗  ██║██╔════╝
+    █████╗  ██║   ██║██████╔╝█████╗  ██║     ███████║███████╗   ██║   ██║██╔██╗ ██║██║  ███╗
+    ██╔══╝  ██║   ██║██╔══██╗██╔══╝  ██║     ██╔══██║╚════██║   ██║   ██║██║╚██╗██║██║   ██║
+    ██║     ╚██████╔╝██║  ██║███████╗╚██████╗██║  ██║███████║   ██║   ██║██║ ╚████║╚██████╔╝
+    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝
+```
+
+### *ARIMA. Prophet. LSTM. Three Models. One Future.*
+
+[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://tensorflow.org)
+[![Prophet](https://img.shields.io/badge/Prophet-Meta-4267B2?style=for-the-badge)](https://facebook.github.io/prophet)
+[![statsmodels](https://img.shields.io/badge/ARIMA-statsmodels-blue?style=for-the-badge)](https://www.statsmodels.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ---
 
-## Project Overview
+> **A complete time series forecasting project that trains ARIMA, Prophet, and LSTM on 3 years of energy consumption data — then pits them head-to-head on a 60-day forecast.**
 
-Energy consumption data exhibits rich temporal structure — long-term growth trends, weekly usage cycles, and yearly seasonal swings tied to heating and cooling demand. This project uses three years of synthetic daily energy readings (in kWh) to showcase how each modeling family handles these patterns.
-
-| Model | Family | Strengths |
-|---|---|---|
-| ARIMA | Classical statistics | Interpretable, principled stationarity handling |
-| Prophet | Decomposition / Bayesian | Automatic seasonality, robust to missing data |
-| LSTM | Deep learning (Keras) | Learns non-linear long-range dependencies |
+</div>
 
 ---
 
-## Project Structure
+## ◈ Three Paradigms. One Problem.
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                    FORECASTING ARCHITECTURE                          │
+│                                                                      │
+│   3 Years Daily Energy Data (kWh)                                    │
+│   Trend + Weekly + Yearly seasonality + Noise                        │
+│              │                                                       │
+│     ┌────────┴──────────────────────────┐                           │
+│     ▼              ▼                    ▼                           │
+│  ┌──────────┐  ┌──────────┐       ┌──────────┐                     │
+│  │  ARIMA   │  │ Prophet  │       │   LSTM   │                     │
+│  │          │  │          │       │          │                     │
+│  │Classical │  │Facebook  │       │ Deep     │                     │
+│  │stats     │  │decompose │       │ Learning │                     │
+│  │ADF test  │  │Bayesian  │       │Sequence  │                     │
+│  │ACF/PACF  │  │intervals │       │learning  │                     │
+│  └────┬─────┘  └────┬─────┘       └────┬─────┘                    │
+│       └─────────────┴────────────────── ┘                           │
+│                          │                                           │
+│               60-Day Forecast Comparison                             │
+│               RMSE · MAE · Visual overlay                            │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## ◈ Model Comparison
+
+| Model | RMSE (kWh) | MAE (kWh) | Strength |
+|---|---|---|---|
+| ARIMA | ~15–25 | ~12–20 | Interpretable, principled |
+| **Prophet** | **~10–18** | **~8–15** | Auto seasonality, robust |
+| LSTM | ~12–22 | ~9–18 | Non-linear, long-range |
+
+---
+
+## ◈ The Data — Built From Physics
+
+```python
+consumption = trend + weekly_seasonality + yearly_seasonality + noise
+# 3 years daily (2020-01-01 → 2022-12-31)
+# Trend:   +0.05 kWh/day linear growth
+# Weekly:  lower on weekends
+# Yearly:  peak winter, trough summer (cosine wave)
+# Noise:   Gaussian day-to-day variation
+```
+
+No external download required — the synthetic generator runs automatically.
+
+---
+
+## ◈ ARIMA Deep Dive
+
+- Augmented Dickey-Fuller test → confirms non-stationarity
+- First-order differencing → achieves stationarity
+- ACF + PACF plots → identify lag structure
+- ARIMA(2,1,2) fitted via statsmodels
+- 60-day out-of-sample forecast
+
+**Why ARIMA?** Linear combinations of past values and forecast errors. Highly interpretable. Fails on non-linear dynamics.
+
+---
+
+## ◈ Prophet Deep Dive
+
+- Data reformatted to `ds`/`y` convention
+- Yearly + weekly seasonality enabled
+- Uncertainty intervals built-in
+- Component plots: trend / weekly / yearly decomposition
+
+**Why Prophet?** Developed at Meta. Minimal tuning. Handles missing data. Calibrated uncertainty. Best for stakeholder communication.
+
+---
+
+## ◈ LSTM Deep Dive
+
+```
+Input → LSTM(64) → Dropout(0.2) → LSTM(32) → Dropout(0.2) → Dense(1)
+```
+
+- 30-day look-back window
+- Min-max scaling → inverse transform at inference
+- 30 epochs, batch size 32
+
+**Why LSTM?** Captures non-linear temporal dependencies. Adapts to structural breaks. Highest data requirements, lowest interpretability.
+
+---
+
+## ◈ Notebook Walkthrough
+
+| Cell | Contents |
+|---|---|
+| 1 | Introduction & problem statement |
+| 2 | Imports |
+| 3 | Synthetic data generation |
+| 4 | EDA: rolling averages, seasonal decomposition |
+| 5 | Stationarity testing + differencing |
+| 6 | ARIMA model + forecast |
+| 7 | Prophet model + component plots |
+| 8 | LSTM model + training |
+| 9 | Three-model comparison chart + metrics table |
+| 10 | Conclusions & next steps |
+
+---
+
+## ◈ Quick Start
+
+```bash
+# 1. Clone
+git clone https://github.com/isamkhan1809/time-series-forecasting.git
+cd time-series-forecasting
+
+# 2. Install
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+
+# 3. Launch
+jupyter notebook time_series_forecasting.ipynb
+# Run All Cells — no data download needed
+```
+
+> **Apple Silicon:** replace `tensorflow==2.15.0` with `tensorflow-macos` + `tensorflow-metal`
+
+---
+
+## ◈ Project Structure
 
 ```
 time-series-forecasting/
-├── time_series_forecasting.ipynb   # Main analysis notebook (10 cells)
-├── requirements.txt                # Pinned Python dependencies
-├── README.md                       # This file
-└── data/                           # Placeholder for any external datasets
+├── time_series_forecasting.ipynb  ← Full pipeline (10 cells)
+├── requirements.txt
+├── data/                          ← External dataset placeholder
+└── README.md
 ```
 
 ---
 
-## Setup Instructions
+<div align="center">
 
-### 1. Clone / navigate to the project
+**Three models enter. One future emerges.**
 
-```bash
-cd /path/to/time-series-forecasting
-```
+*MIT License*
 
-### 2. Create and activate a virtual environment (recommended)
-
-```bash
-python -m venv venv
-source venv/bin/activate        # macOS / Linux
-# venv\Scripts\activate         # Windows
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-> **Note:** TensorFlow 2.15 requires Python 3.8–3.11. On Apple Silicon Macs, use `tensorflow-macos` and `tensorflow-metal` instead of `tensorflow==2.15.0`.
-
-### 4. Launch Jupyter
-
-```bash
-jupyter notebook time_series_forecasting.ipynb
-```
-
-Run all cells in order (Cell > Run All) or step through them individually.
-
----
-
-## Notebook Walkthrough
-
-### Cell 1 — Introduction
-Markdown overview of the problem statement, dataset, and the three models used.
-
-### Cell 2 — Imports
-All required libraries: pandas, numpy, matplotlib, statsmodels, Prophet, TensorFlow/Keras, and scikit-learn.
-
-### Cell 3 — Synthetic Data Generation
-Three years of daily readings (2020-01-01 to 2022-12-31) constructed from four additive components:
-- **Trend**: slow linear growth (+0.05 kWh/day)
-- **Weekly seasonality**: lower consumption on weekends
-- **Yearly seasonality**: peak in winter, trough in summer (cosine wave)
-- **Gaussian noise**: random day-to-day variation
-
-Output: a `pandas.DataFrame` with columns `date` and `consumption_kwh`.
-
-### Cell 4 — Exploratory Data Analysis
-- Raw time series plot
-- 30-day and 90-day rolling mean and standard deviation overlaid
-- Classical seasonal decomposition (additive model, period = 365)
-
-### Cell 5 — Stationarity Testing and Differencing
-- Augmented Dickey-Fuller (ADF) test on the original series
-- First-order differencing to achieve stationarity
-- ADF re-test to confirm
-
-### Cell 6 — ARIMA Model
-- ACF and PACF plots used to identify lag structure
-- ARIMA(2,1,2) fitted via `statsmodels.tsa.arima.model.ARIMA`
-- 60-day out-of-sample forecast on a held-out test set
-- Evaluation: RMSE and MAE
-
-### Cell 7 — Prophet Model
-- Data reformatted to Prophet's `ds`/`y` convention
-- Model fitted with yearly and weekly seasonality enabled
-- 60-day forecast with uncertainty intervals
-- Component plots (trend, weekly effect, yearly effect)
-
-### Cell 8 — LSTM Model
-- Min-max scaling of the training series
-- Sliding-window sequence creation (look-back = 30 days)
-- Architecture: `Input → LSTM(64) → Dropout(0.2) → LSTM(32) → Dropout(0.2) → Dense(1)`
-- Trained for 30 epochs (batch size 32)
-- Predictions inverse-transformed and evaluated
-
-### Cell 9 — Model Comparison
-- All three forecast series plotted against the actual test values on a single chart
-- Summary metrics table (RMSE, MAE) for each model
-
-### Cell 10 — Conclusions
-Markdown discussion of results, model trade-offs, and suggested next steps.
-
----
-
-## Methodology
-
-### Why ARIMA?
-ARIMA (AutoRegressive Integrated Moving Average) is the workhorse of classical time series analysis. It models the series as a linear combination of its own past values and past forecast errors. The "Integrated" component handles non-stationarity through differencing. ARIMA is highly interpretable and works well when the underlying dynamics are approximately linear.
-
-### Why Prophet?
-Developed at Meta, Prophet decomposes a series into trend, seasonality, and holiday components using a curve-fitting approach. It requires minimal hyperparameter tuning, handles missing data gracefully, and produces well-calibrated uncertainty intervals. Its component plots make seasonal patterns easy to communicate to non-technical stakeholders.
-
-### Why LSTM?
-Long Short-Term Memory networks are recurrent neural networks specifically designed to learn long-range temporal dependencies. Unlike ARIMA and Prophet, LSTM can capture non-linear interactions between variables and adapts to structural breaks in the series. The trade-off is greater data requirements and reduced interpretability.
-
----
-
-## Key Results (indicative — values vary by random seed)
-
-| Model | RMSE (kWh) | MAE (kWh) |
-|---|---|---|
-| ARIMA | ~15–25 | ~12–20 |
-| Prophet | ~10–18 | ~8–15 |
-| LSTM | ~12–22 | ~9–18 |
-
-Exact numbers depend on the random seed used during data generation and LSTM weight initialization.
-
----
-
-## References
-
-- Box, G. E. P., Jenkins, G. M., et al. (2015). *Time Series Analysis: Forecasting and Control* (5th ed.)
-- Taylor, S. J., & Letham, B. (2018). Forecasting at scale. *The American Statistician*, 72(1), 37-45.
-- Hochreiter, S., & Schmidhuber, J. (1997). Long Short-Term Memory. *Neural Computation*, 9(8), 1735-1780.
-- Hands-On Time Series Forecasting — [Medium / Data Science Collective](https://medium.com/data-science-collective/hands-on-time-series-forecasting-43ccbd418c9a)
+</div>
