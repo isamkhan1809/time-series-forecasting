@@ -16,15 +16,15 @@
     ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝
 ```
 
-### *ARIMA. Prophet. LSTM. Three Models. One Future.*
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=9B59B6&center=true&vCenter=true&width=700&lines=ARIMA.+Prophet.+LSTM.+Three+Models.+One+Future.+%F0%9F%94%AE;60-Day+Energy+Consumption+Forecast;Classical+Stats+vs+Deep+Learning+%E2%80%94+Head+to+Head;3+Years+of+Data+%7C+Full+Evaluation+Pipeline" alt="Typing SVG" />
+
+<img src="https://media.giphy.com/media/du3J3cXyzhj75IOgvA/giphy.gif" width="360" />
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://tensorflow.org)
 [![Prophet](https://img.shields.io/badge/Prophet-Meta-4267B2?style=for-the-badge)](https://facebook.github.io/prophet)
 [![statsmodels](https://img.shields.io/badge/ARIMA-statsmodels-blue?style=for-the-badge)](https://www.statsmodels.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-
----
 
 > **A complete time series forecasting project that trains ARIMA, Prophet, and LSTM on 3 years of energy consumption data — then pits them head-to-head on a 60-day forecast.**
 
@@ -39,20 +39,17 @@
 │                    FORECASTING ARCHITECTURE                          │
 │                                                                      │
 │   3 Years Daily Energy Data (kWh)                                    │
-│   Trend + Weekly + Yearly seasonality + Noise                        │
+│   Trend + Weekly + Yearly seasonality + Gaussian Noise               │
 │              │                                                       │
 │     ┌────────┴──────────────────────────┐                           │
 │     ▼              ▼                    ▼                           │
 │  ┌──────────┐  ┌──────────┐       ┌──────────┐                     │
 │  │  ARIMA   │  │ Prophet  │       │   LSTM   │                     │
-│  │          │  │          │       │          │                     │
 │  │Classical │  │Facebook  │       │ Deep     │                     │
-│  │stats     │  │decompose │       │ Learning │                     │
-│  │ADF test  │  │Bayesian  │       │Sequence  │                     │
-│  │ACF/PACF  │  │intervals │       │learning  │                     │
+│  │ADF test  │  │decompose │       │Learning  │                     │
+│  │ACF/PACF  │  │Bayesian  │       │Sequence  │                     │
 │  └────┬─────┘  └────┬─────┘       └────┬─────┘                    │
 │       └─────────────┴────────────────── ┘                           │
-│                          │                                           │
 │               60-Day Forecast Comparison                             │
 │               RMSE · MAE · Visual overlay                            │
 └──────────────────────────────────────────────────────────────────────┘
@@ -70,55 +67,32 @@
 
 ---
 
-## ◈ The Data — Built From Physics
+## ◈ The Data — Synthetic But Realistic
 
 ```python
 consumption = trend + weekly_seasonality + yearly_seasonality + noise
-# 3 years daily (2020-01-01 → 2022-12-31)
+# 2020-01-01 → 2022-12-31 (3 years daily)
 # Trend:   +0.05 kWh/day linear growth
-# Weekly:  lower on weekends
+# Weekly:  lower consumption on weekends
 # Yearly:  peak winter, trough summer (cosine wave)
 # Noise:   Gaussian day-to-day variation
 ```
 
-No external download required — the synthetic generator runs automatically.
+No external download required — the generator runs automatically.
 
 ---
 
-## ◈ ARIMA Deep Dive
+## ◈ Model Deep Dives
 
-- Augmented Dickey-Fuller test → confirms non-stationarity
-- First-order differencing → achieves stationarity
-- ACF + PACF plots → identify lag structure
-- ARIMA(2,1,2) fitted via statsmodels
-- 60-day out-of-sample forecast
+**ARIMA** — ADF stationarity test → first-order differencing → ACF/PACF → ARIMA(2,1,2). Highly interpretable. Fails on non-linear dynamics.
 
-**Why ARIMA?** Linear combinations of past values and forecast errors. Highly interpretable. Fails on non-linear dynamics.
+**Prophet** — Meta's decomposition model. `ds`/`y` format. Yearly + weekly seasonality. Calibrated uncertainty intervals. Best for stakeholder communication.
 
----
-
-## ◈ Prophet Deep Dive
-
-- Data reformatted to `ds`/`y` convention
-- Yearly + weekly seasonality enabled
-- Uncertainty intervals built-in
-- Component plots: trend / weekly / yearly decomposition
-
-**Why Prophet?** Developed at Meta. Minimal tuning. Handles missing data. Calibrated uncertainty. Best for stakeholder communication.
-
----
-
-## ◈ LSTM Deep Dive
-
+**LSTM**
 ```
 Input → LSTM(64) → Dropout(0.2) → LSTM(32) → Dropout(0.2) → Dense(1)
+30-day look-back · 30 epochs · batch size 32 · min-max scaled
 ```
-
-- 30-day look-back window
-- Min-max scaling → inverse transform at inference
-- 30 epochs, batch size 32
-
-**Why LSTM?** Captures non-linear temporal dependencies. Adapts to structural breaks. Highest data requirements, lowest interpretability.
 
 ---
 
@@ -126,36 +100,27 @@ Input → LSTM(64) → Dropout(0.2) → LSTM(32) → Dropout(0.2) → Dense(1)
 
 | Cell | Contents |
 |---|---|
-| 1 | Introduction & problem statement |
-| 2 | Imports |
-| 3 | Synthetic data generation |
-| 4 | EDA: rolling averages, seasonal decomposition |
-| 5 | Stationarity testing + differencing |
+| 1–3 | Intro, imports, synthetic data |
+| 4–5 | EDA, seasonal decomposition, stationarity |
 | 6 | ARIMA model + forecast |
 | 7 | Prophet model + component plots |
 | 8 | LSTM model + training |
-| 9 | Three-model comparison chart + metrics table |
-| 10 | Conclusions & next steps |
+| 9–10 | Three-model comparison + conclusions |
 
 ---
 
 ## ◈ Quick Start
 
 ```bash
-# 1. Clone
 git clone https://github.com/isamkhan1809/time-series-forecasting.git
 cd time-series-forecasting
-
-# 2. Install
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-
-# 3. Launch
 jupyter notebook time_series_forecasting.ipynb
-# Run All Cells — no data download needed
+# Run All Cells — no download needed
 ```
 
-> **Apple Silicon:** replace `tensorflow==2.15.0` with `tensorflow-macos` + `tensorflow-metal`
+> **Apple Silicon:** use `tensorflow-macos` + `tensorflow-metal` instead of `tensorflow==2.15.0`
 
 ---
 
@@ -163,9 +128,9 @@ jupyter notebook time_series_forecasting.ipynb
 
 ```
 time-series-forecasting/
-├── time_series_forecasting.ipynb  ← Full pipeline (10 cells)
+├── time_series_forecasting.ipynb
 ├── requirements.txt
-├── data/                          ← External dataset placeholder
+├── data/
 └── README.md
 ```
 
@@ -176,5 +141,11 @@ time-series-forecasting/
 **Three models enter. One future emerges.**
 
 *MIT License*
+
+<br/>
+
+Built by [Isam Khan](https://github.com/isamkhan1809) &nbsp;|&nbsp;
+<a href="https://linkedin.com/in/isam-khan-3a1260292"><img src="https://img.shields.io/badge/-LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white&labelColor=000000"/></a>
+<a href="https://isamkhan.com"><img src="https://img.shields.io/badge/-isamkhan.com-00D9FF?style=flat-square&logo=googlechrome&logoColor=white&labelColor=000000"/></a>
 
 </div>
