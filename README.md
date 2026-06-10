@@ -1,152 +1,208 @@
 <div align="center">
 
-```
-████████╗██╗███╗   ███╗███████╗    ███████╗███████╗██████╗ ██╗███████╗███████╗
-╚══██╔══╝██║████╗ ████║██╔════╝    ██╔════╝██╔════╝██╔══██╗██║██╔════╝██╔════╝
-   ██║   ██║██╔████╔██║█████╗      ███████╗█████╗  ██████╔╝██║█████╗  ███████╗
-   ██║   ██║██║╚██╔╝██║██╔══╝      ╚════██║██╔══╝  ██╔══██╗██║██╔══╝  ╚════██║
-   ██║   ██║██║ ╚═╝ ██║███████╗    ███████║███████╗██║  ██║██║███████╗███████║
-   ╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝    ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Time%20Series%20Forecasting&fontSize=58&fontColor=fff&animation=twinkling&fontAlignY=35&desc=ARIMA%20vs%20Prophet%20vs%20LSTM%20%E2%80%94%20Three%20Models%2C%20One%20Future&descAlignY=60&descSize=18" width="100%"/>
 
-    ███████╗ ██████╗ ██████╗ ███████╗ ██████╗ █████╗ ███████╗████████╗██╗███╗   ██╗ ██████╗
-    ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██╔══██╗██╔════╝╚══██╔══╝██║████╗  ██║██╔════╝
-    █████╗  ██║   ██║██████╔╝█████╗  ██║     ███████║███████╗   ██║   ██║██╔██╗ ██║██║  ███╗
-    ██╔══╝  ██║   ██║██╔══██╗██╔══╝  ██║     ██╔══██║╚════██║   ██║   ██║██║╚██╗██║██║   ██║
-    ██║     ╚██████╔╝██║  ██║███████╗╚██████╗██║  ██║███████║   ██║   ██║██║ ╚████║╚██████╔╝
-    ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝
-```
+<br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=9B59B6&center=true&vCenter=true&width=700&lines=ARIMA.+Prophet.+LSTM.+Three+Models.+One+Future.+%F0%9F%94%AE;60-Day+Energy+Consumption+Forecast;Classical+Stats+vs+Deep+Learning+%E2%80%94+Head+to+Head;3+Years+of+Data+%7C+Full+Evaluation+Pipeline" alt="Typing SVG" />
+[![Python](https://img.shields.io/badge/Python-3.8%2B-9B59B6?style=for-the-badge&logo=python&logoColor=white&labelColor=0D0D0D)](https://python.org)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white&labelColor=0D0D0D)](https://tensorflow.org)
+[![Prophet](https://img.shields.io/badge/Prophet-Meta-9B59B6?style=for-the-badge&logoColor=white&labelColor=0D0D0D)](https://facebook.github.io/prophet)
+[![License](https://img.shields.io/badge/License-MIT-9B59B6?style=for-the-badge&labelColor=0D0D0D)](LICENSE)
 
-<img src="https://media.giphy.com/media/ENtNaKkRRbVAc/giphy.gif" width="360" />
+<br/>
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://tensorflow.org)
-[![Prophet](https://img.shields.io/badge/Prophet-Meta-4267B2?style=for-the-badge)](https://facebook.github.io/prophet)
-[![statsmodels](https://img.shields.io/badge/ARIMA-statsmodels-blue?style=for-the-badge)](https://www.statsmodels.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-
-> **A complete time series forecasting project that trains ARIMA, Prophet, and LSTM on 3 years of energy consumption data — then pits them head-to-head on a 60-day forecast.**
+<a href="https://github.com/isamkhan1809/time-series-forecasting">
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=22&pause=1000&color=9B59B6&center=true&vCenter=true&width=700&lines=ARIMA+vs+Prophet+vs+LSTM+%E2%80%94+Head+to+Head;60-Day+Energy+Consumption+Forecast;Classical+Stats+vs+Deep+Learning;3+Years+of+Data.+One+Winner." alt="Typing SVG" />
+</a>
 
 </div>
 
 ---
 
-## ◈ Three Paradigms. One Problem.
+<br/>
+
+<div align="center">
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                    FORECASTING ARCHITECTURE                          │
-│                                                                      │
-│   3 Years Daily Energy Data (kWh)                                    │
-│   Trend + Weekly + Yearly seasonality + Gaussian Noise               │
-│              │                                                       │
-│     ┌────────┴──────────────────────────┐                           │
-│     ▼              ▼                    ▼                           │
-│  ┌──────────┐  ┌──────────┐       ┌──────────┐                     │
-│  │  ARIMA   │  │ Prophet  │       │   LSTM   │                     │
-│  │Classical │  │Facebook  │       │ Deep     │                     │
-│  │ADF test  │  │decompose │       │Learning  │                     │
-│  │ACF/PACF  │  │Bayesian  │       │Sequence  │                     │
-│  └────┬─────┘  └────┬─────┘       └────┬─────┘                    │
-│       └─────────────┴────────────────── ┘                           │
-│               60-Day Forecast Comparison                             │
-│               RMSE · MAE · Visual overlay                            │
-└──────────────────────────────────────────────────────────────────────┘
+  ╔══════════════════════════════════════════════════════════════╗
+  ║                                                              ║
+  ║   ARIMA sees patterns in the past.                          ║
+  ║   Prophet decomposes the seasons.                           ║
+  ║   LSTM learns the non-linear truth.                         ║
+  ║                                                              ║
+  ║       Three paradigms. One 60-day forecast. Who wins?       ║
+  ║                                                              ║
+  ╚══════════════════════════════════════════════════════════════╝
 ```
 
----
+</div>
 
-## ◈ Model Comparison
+<br/>
 
-| Model | RMSE (kWh) | MAE (kWh) | Strength |
-|---|---|---|---|
-| ARIMA | ~15–25 | ~12–20 | Interpretable, principled |
-| **Prophet** | **~10–18** | **~8–15** | Auto seasonality, robust |
-| LSTM | ~12–22 | ~9–18 | Non-linear, long-range |
+## `>_ The Story`
 
----
+> *Energy consumption is one of the most structured time series in existence — a long-term trend, a weekly rhythm, a yearly seasonal swing. It's the perfect arena to pit three forecasting paradigms against each other.*
+>
+> *ARIMA — the classical statistician — tests stationarity, differences the series, and fits a linear model to its own lags.*
+>
+> *Prophet — Meta's decomposition engine — separates trend, weekly, and yearly seasonality automatically.*
+>
+> *LSTM — the deep learner — reads 30 days of history and predicts the next, learning non-linear dependencies the others can't see.*
+>
+> *All three are trained. All three are evaluated. This notebook shows you exactly where each one wins and where it breaks.*
 
-## ◈ The Data — Synthetic But Realistic
+<br/>
+
+## `>_ The Data`
 
 ```python
+# 3 years of synthetic daily energy consumption
 consumption = trend + weekly_seasonality + yearly_seasonality + noise
-# 2020-01-01 → 2022-12-31 (3 years daily)
-# Trend:   +0.05 kWh/day linear growth
-# Weekly:  lower consumption on weekends
-# Yearly:  peak winter, trough summer (cosine wave)
+
+# 2020-01-01 → 2022-12-31 (1,096 data points)
+# Trend:   +0.05 kWh/day  — slow linear growth
+# Weekly:  lower on weekends
+# Yearly:  peak in winter, trough in summer (cosine wave)
 # Noise:   Gaussian day-to-day variation
 ```
 
-No external download required — the generator runs automatically.
+No external download required — the generator runs automatically in Cell 3.
 
----
+<br/>
 
-## ◈ Model Deep Dives
+## `>_ Architecture`
 
-**ARIMA** — ADF stationarity test → first-order differencing → ACF/PACF → ARIMA(2,1,2). Highly interpretable. Fails on non-linear dynamics.
-
-**Prophet** — Meta's decomposition model. `ds`/`y` format. Yearly + weekly seasonality. Calibrated uncertainty intervals. Best for stakeholder communication.
-
-**LSTM**
 ```
-Input → LSTM(64) → Dropout(0.2) → LSTM(32) → Dropout(0.2) → Dense(1)
-30-day look-back · 30 epochs · batch size 32 · min-max scaled
+┌─────────────────────────────────────────────────────────────┐
+│                  FORECASTING PIPELINE                       │
+│                                                             │
+│  3 Years Daily Energy Data                                  │
+│  ─────────────────────────                                  │
+│  Trend + Seasonality + Noise                                │
+│                 │                                           │
+│     ┌───────────┼───────────┐                              │
+│     ▼           ▼           ▼                              │
+│  ┌────────┐  ┌─────────┐  ┌──────┐                         │
+│  │ ARIMA  │  │ Prophet │  │ LSTM │                         │
+│  │        │  │         │  │      │                         │
+│  │ ADF    │  │ ds/y    │  │ 30d  │                         │
+│  │ ACF    │  │ format  │  │ look │                         │
+│  │ PACF   │  │ yearly+ │  │ back │                         │
+│  │ (2,1,2)│  │ weekly  │  │ LSTM │                         │
+│  └───┬────┘  └────┬────┘  │ (64) │                         │
+│      │            │       │ LSTM │                         │
+│      │            │       │ (32) │                         │
+│      │            │       └──┬───┘                         │
+│      └────────────┴──────────┘                             │
+│                   │                                        │
+│           60-Day Forecast Comparison                        │
+│           RMSE · MAE · Visual Overlay                       │
+└─────────────────────────────────────────────────────────────┘
 ```
 
----
+<br/>
 
-## ◈ Notebook Walkthrough
+## `>_ Results`
+
+<div align="center">
+
+| Model | RMSE (kWh) | MAE (kWh) | Best At |
+|---|---|---|---|
+| ARIMA | ~15–25 | ~12–20 | Interpretable, linear dynamics |
+| **Prophet** | **~10–18** | **~8–15** | Auto seasonality, stakeholder reports |
+| LSTM | ~12–22 | ~9–18 | Non-linear, structural breaks |
+
+</div>
+
+<br/>
+
+## `>_ LSTM Architecture`
+
+```
+Input (30-day sequence)
+  → LSTM(64) → Dropout(0.2)
+  → LSTM(32) → Dropout(0.2)
+  → Dense(1)
+
+30 epochs · batch size 32 · min-max scaled
+Inverse transform applied at inference
+```
+
+<br/>
+
+## `>_ Notebook Walkthrough`
 
 | Cell | Contents |
 |---|---|
-| 1–3 | Intro, imports, synthetic data |
-| 4–5 | EDA, seasonal decomposition, stationarity |
-| 6 | ARIMA model + forecast |
-| 7 | Prophet model + component plots |
-| 8 | LSTM model + training |
-| 9–10 | Three-model comparison + conclusions |
+| 1–3 | Introduction, imports, synthetic data generation |
+| 4–5 | EDA, seasonal decomposition, stationarity testing |
+| 6 | ARIMA — ACF/PACF, fitting, 60-day forecast |
+| 7 | Prophet — fitting, component plots, forecast |
+| 8 | LSTM — training, inference, inverse transform |
+| 9–10 | Three-model comparison chart + conclusions |
 
----
+<br/>
 
-## ◈ Quick Start
+## `>_ Get Running`
 
 ```bash
+# Clone
 git clone https://github.com/isamkhan1809/time-series-forecasting.git
 cd time-series-forecasting
+
+# Install
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
+
+# Launch
 jupyter notebook time_series_forecasting.ipynb
 # Run All Cells — no download needed
 ```
 
-> **Apple Silicon:** use `tensorflow-macos` + `tensorflow-metal` instead of `tensorflow==2.15.0`
+> **Apple Silicon:** replace `tensorflow==2.15.0` with `tensorflow-macos` + `tensorflow-metal`
 
----
+<br/>
 
-## ◈ Project Structure
+## `>_ Tech Stack`
+
+<div align="center">
+
+| Layer | Technology |
+|---|---|
+| **Classical** | statsmodels (ARIMA) |
+| **Decomposition** | Prophet (Meta) |
+| **Deep Learning** | TensorFlow / Keras (LSTM) |
+| **Data** | pandas, numpy |
+| **Visualisation** | matplotlib, seaborn |
+
+</div>
+
+<br/>
+
+## `>_ Project Structure`
 
 ```
 time-series-forecasting/
-├── time_series_forecasting.ipynb
+├── time_series_forecasting.ipynb  ← Full 10-cell pipeline
 ├── requirements.txt
-├── data/
-└── README.md
+└── data/                          ← Optional external datasets
 ```
+
+<br/>
 
 ---
 
 <div align="center">
 
-**Three models enter. One future emerges.**
-
-*MIT License*
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=120&section=footer&animation=twinkling" width="100%"/>
 
 <br/>
 
-Interested in forecasting, time series modelling, or energy analytics?<br/>
-Let's connect — built by <a href="https://github.com/isamkhan1809">Isam Khan</a> &nbsp;|&nbsp;
-<a href="https://linkedin.com/in/isam-khan-3a1260292"><img src="https://img.shields.io/badge/-LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white&labelColor=000000"/></a>
-<a href="https://isamkhan.com"><img src="https://img.shields.io/badge/-isamkhan.com-00D9FF?style=flat-square&logo=googlechrome&logoColor=white&labelColor=000000"/></a>
+*Three models enter. One future emerges.*
+*ARIMA · Prophet · LSTM — compared head to head.*
+
+<br/>
+
+[![GitHub](https://img.shields.io/badge/github-isamkhan1809-9B59B6?style=for-the-badge&logo=github&logoColor=white&labelColor=0D0D0D)](https://github.com/isamkhan1809)
 
 </div>
