@@ -26,11 +26,11 @@
 ```
   ╔══════════════════════════════════════════════════════════════╗
   ║                                                              ║
-  ║   ARIMA sees patterns in the past.                          ║
-  ║   Prophet decomposes the seasons.                           ║
-  ║   LSTM learns the non-linear truth.                         ║
+  ║   ARIMA sees patterns in the past.                           ║
+  ║   Prophet decomposes the seasons.                            ║
+  ║   LSTM learns the non-linear truth.                          ║
   ║                                                              ║
-  ║       Three paradigms. One 60-day forecast. Who wins?       ║
+  ║       Three paradigms. One 60-day forecast. Who wins?        ║
   ║                                                              ║
   ╚══════════════════════════════════════════════════════════════╝
 ```
@@ -80,21 +80,21 @@ No external download required — the generator runs automatically in Cell 3.
 │  ─────────────────────────                                  │
 │  Trend + Seasonality + Noise                                │
 │                 │                                           │
-│     ┌───────────┼───────────┐                              │
-│     ▼           ▼           ▼                              │
-│  ┌────────┐  ┌─────────┐  ┌──────┐                         │
-│  │ ARIMA  │  │ Prophet │  │ LSTM │                         │
-│  │        │  │         │  │      │                         │
-│  │ ADF    │  │ ds/y    │  │ 30d  │                         │
-│  │ ACF    │  │ format  │  │ look │                         │
-│  │ PACF   │  │ yearly+ │  │ back │                         │
-│  │ (2,1,2)│  │ weekly  │  │ LSTM │                         │
-│  └───┬────┘  └────┬────┘  │ (64) │                         │
-│      │            │       │ LSTM │                         │
-│      │            │       │ (32) │                         │
-│      │            │       └──┬───┘                         │
-│      └────────────┴──────────┘                             │
-│                   │                                        │
+│     ┌───────────┼───────────┐                               │
+│     ▼           ▼           ▼                               │
+│  ┌────────┐  ┌─────────┐  ┌──────┐                          │
+│  │ ARIMA  │  │ Prophet │  │ LSTM │                          │
+│  │        │  │         │  │      │                          │
+│  │ ADF    │  │ ds/y    │  │ 30d  │                          │
+│  │ ACF    │  │ format  │  │ look │                          │
+│  │ PACF   │  │ yearly+ │  │ back │                          │
+│  │ (2,1,2)│  │ weekly  │  │ LSTM │                          │
+│  └───┬────┘  └────┬────┘  │ (64) │                          │
+│      │            │       │ LSTM │                          │
+│      │            │       │ (32) │                          │
+│      │            │       └──┬───┘                          │
+│      └────────────┴──────────┘                              │
+│                   │                                         │
 │           60-Day Forecast Comparison                        │
 │           RMSE · MAE · Visual Overlay                       │
 └─────────────────────────────────────────────────────────────┘
